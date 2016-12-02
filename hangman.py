@@ -10,7 +10,7 @@ init(autoreset=True)
 
 #Using choice() to pick a word and strip() to remove whitespace
 def wordpick():
-    with open("/home/cybernetics/sowpods.txt", "r") as f:
+    with open("sowpods.txt", "r") as f:
         #Scrabble dictionary from which the word is chosen
         bigdict = f.readlines()
     word = choice(bigdict).strip()
