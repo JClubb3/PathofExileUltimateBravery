@@ -12,8 +12,8 @@
 #Non-functional rolls to remove?:
 #   Resolute Technique and any non-melee
 #   Point Blank and non-projectile
-#   Necromanic Aegis w/o 1h and Shield
-#   
+#   Necromanic Aegis w/o 1h and Shield - removed NA from keystone pool
+#   The Goddes Bound series (shows as 1h sword)
 
 
 #Program should choose 1 main skill to use, 1 ascendancy class, 1 keystone, a weapon type, and a unique.
@@ -476,7 +476,7 @@ keystone = ["Acrobatics", "Ancestral Bond", "Arrow Dancing", "Avatar of Fire", "
             "Ghost Reaver", "Iron Grip", "Iron Reflexes", "Mind Over Matter", "Pain Attunement",
             "Point Blank", "Resolute Technique", "Unwavering Stance", "Vaal Pact", "Zealot's Oath"]
 
-slots = ["helmets", "amulets", "belts", "rings", "body_armours", "boots", "gloves"]
+slots = ["helmets", "amulets", "belts", "rings", "body_armours", "boots", "gloves", "weapon"]
 
 
 def attacks():
@@ -514,15 +514,60 @@ def keystonepick(attack, weapon):
         elif attack.Spell == 0:
             return poekeystone
 
-def uniquepick(weapon):
+def uniquepick(attack, weapon):
     selection = choice(slots)
-    url = "https://web.archive.org/web/20160511032324/http://pathofexile.gamepedia.com/List_of_unique_{}".format(selection)
+    newselection = []
+    print(selection)  
+    
+    if selection == "weapon":
+        if weapon == "Two Hander":
+            selection = attack.AllowedWeapons
+            for s in selection:
+                if "2h" in s or s == "Staff":
+                    newselection.append(s)
+        elif weapon == "1h and Shield" or weapon == "Dual Wield":
+            selection = attack.AllowedWeapons
+            for s in selection:
+                if "1h" in s or s == "Dagger" or s == "Claw" or s == "Wand":
+                    newselection.append(s)
+        elif weapon == "Bow":
+            newselection.append("Bow")
+
+        selection1 = [i for i in newselection if i in attack.AllowedWeapons]
+        selection = choice(selection1)
+          
+        if selection == "1h Axe":
+            selection = "one_hand_axes"
+        elif selection == "2h Axe":
+            selection = "two_hand_axes"
+        elif selection == "Staff":
+            selection = "staves"
+        elif selection == "Claw":
+            selection = "claws"
+        elif selection == "Dagger":
+            selection = "daggers"
+        elif selection == "Wand":
+            selection = "wands"
+        elif selection == "1h Sword":
+            selection = choice(["one_hand_swords", "thrusting_one_hand_swords"])
+        elif selection == "2h Sword":
+            selection = "two_hand_swords"
+        elif selection == "1h Mace":
+            selection = choice(["one_hand_maces", "sceptres"])
+        elif selection == "2h Mace":
+            selection = "two_hand_maces"
+        elif selection == "Bow":
+            selection = "bows"
+  
+    url = "http://pathofexile.gamepedia.com/List_of_unique_{}".format(selection)
     r = requests.get(url)
-        
-    first = re.findall(r'tr id="(\w*.?\w*.?\w*)"', r.text)
-    unique = choice(first)
-    unique = re.sub(r".27", "\'", unique)
-    unique = re.sub(r"_", " ", unique)
+    r_html = r.text
+    
+    first = re.findall(r'<span class="inline-infobox-container"><a href="/\w*" title="(\w*\s?\w*\s?\w*\s?\w*\s?\w*)', r_html)
+    try:
+        unique = choice(first)
+    except IndexError:
+        print("List empty!")
     return unique
 
 if __name__=="__main__":
@@ -557,7 +602,7 @@ if __name__=="__main__":
         poekeystone = keystonepick(attack, weapon)
         print(poekeystone)
 
-        unique = uniquepick(weapon)
+        unique = uniquepick(attack, weapon)
         print(unique)
                 
         print("\nType 'save' to save this build as a .txt, 'new' to generate a new build, or 'exit' to close.")
