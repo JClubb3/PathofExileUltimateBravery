@@ -8,9 +8,10 @@
 #   Check list of weapons/spells
 #   implement tkinter?
 #   add optional weights? ex heavy strike more likely to roll 2h or spells less likely to roll non-staff, wand, mace, or dagger
+#   allow optional number of keystones and uniques
 
 #Non-functional rolls to remove?:
-#   Resolute Technique and any non-melee
+#   Resolute Technique and any non-melee - currently does not roll if main skill is a spell
 #   Point Blank and non-projectile
 #   Necromanic Aegis w/o 1h and Shield - removed NA from keystone pool
 #   The Goddes Bound series (shows as 1h sword)
